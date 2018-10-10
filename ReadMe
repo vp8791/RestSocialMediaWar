@@ -1,0 +1,93 @@
+As per HelloWorldController.java
+=================================
+http://localhost:8080//hello-world/path-variable/dddd
+http://localhost:8080/hello-world-bean
+http://localhost:8080/hello-world
+http://localhost:8080/h2-console
+
+
+
+As per UserResource.java
+===================
+http://localhost:8080/users
+http://localhost:8080/users/1 
+
+Post:
+http://localhost:8080/users
+Body:
+  {
+        "name": "Ranga",
+        "birthDate": "2000-10-09T22:40:20.166+0000"
+    }
+ Raw/Json from postman
+ 
+ Validations
+ =========
+ @Valid
+ 
+ Locale
+ ========
+ http://localhost:8080/hello-world-internationalized
+ Headers(Add [{"key":"Accept-Language","value":"fr","description":"","type":"text","enabled":true}]
+ 			fr or nl
+ 			
+ 			
+ 			
+ Content
+ ---
+ Xml:
+ Add json-dara-format-xml dependency
+ Add header (accept : application/xml)
+ http://localhost:8080/users/3 (get request will return XML file)
+ 
+ Swagger
+ ========
+ http://localhost:8080/v2/api-docs
+ http://localhost:8080/swagger-ui.html
+ 
+ Spring Health Check
+ ==============
+ http://localhost:8080/actuator
+ http://localhost:8080/browser
+ 
+ Static Filtering
+ =================
+ http://localhost:8080/filtering
+  http://localhost:8080/filtering-list
+ (Exclude some bean fileds)
+ 
+ Versioning (PersonVersioningController.java)
+ ========
+1st way:
+	 http://localhost:8080/v1/person
+ 	 http://localhost:8080/v2/person
+ 
+ 2nd Way:
+   	 http://localhost:8080/person/param?version=1
+     http://localhost:8080/person/param?version=2
+     
+     
+ 3rd Way with Headerds:
+      http://localhost:8080/person/header
+      X-API-VERSION=1 //Calls Version 1
+      X-API-VERSION=2  //Calls Version 2  
+      
+  4rth way Produces:
+    a) http://localhost:8080/person/produces
+      [{"key":"Accept","value":"application/vnd.company.app-v1+json","description":"","type":"text","enabled":true}]
+     b) http://localhost:8080/person/produces
+      [{"key":"Accept","value":"application/vnd.company.app-v2+json","description":"","type":"text","enabled":true}] 
+      
+ 
+ JPA
+ ===
+   a) http://localhost:8080/jpa/users - Post
+    {
+        "name": "Ree",
+        "birthDate": "1000-10-09T22:40:20.166+0000"
+    }
+   
+    b) http://localhost:8080/jpa/users/10001 - Delete
+    
+    c) http://localhost:8080/jpa/users/10002
+ 			

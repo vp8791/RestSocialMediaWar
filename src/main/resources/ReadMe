@@ -1,0 +1,6 @@
+1) Build War file
+mvn clean package
+and deploy war file
+
+2) Use Jar file
+Uncomment out RestfulWebServicesApplication.java and use pom_original_jar.xml as pom.xml and run RestfulWebServicesApplication as java application
