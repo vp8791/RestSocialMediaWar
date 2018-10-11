@@ -18,7 +18,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description="All details about the user.")
 @Entity
-@Table(name="Users")
+@Table(name="USER_DETAILS")
 public class User {
 
 	@Id

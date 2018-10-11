@@ -1,16 +1,12 @@
 package com.in28minutes.rest.webservices.restfulwebservices.user;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.*;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name="USER_POSTS")
 public class Post {
 	
 	@Id
