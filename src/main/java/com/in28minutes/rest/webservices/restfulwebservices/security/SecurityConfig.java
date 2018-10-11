@@ -1,37 +1,38 @@
 package com.in28minutes.rest.webservices.restfulwebservices.security;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //https://www.youtube.com/watch?v=4x-HgnJ31cg
+//https://www.boraji.com/spring-security-5-jdbc-based-authentication-example
+
+//Password Generation
+//String encoded=new BCryptPasswordEncoder().encode("admin@123");
+// System.out.println(encoded);
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	// Authentication : User --> Roles
-	protected void configure(AuthenticationManagerBuilder auth)
-			throws Exception {
-		// user1 with password secret1 and roles USER  				===================>	(user1 has roles USER)
-		// admin1 with password secret1 and roles USER and ADMIN    ===================>	(admin1 has roles USER and Admin)
-		System.out.println("=======================In Configure AuthenticationManagerBuilder===============" );
-		auth.inMemoryAuthentication().passwordEncoder(org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance()).withUser("user1").password("secret1")
-				.roles("USER").and().withUser("admin1").password("secret1")
-				.roles("USER", "ADMIN");
+
+	@Autowired
+	private DataSource dataSource;
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.jdbcAuthentication().dataSource(dataSource)
+				.usersByUsernameQuery("select USERNAME, PASSWORD, ENABLED" + " from LOGIN_USERS where USERNAME=?")
+				.authoritiesByUsernameQuery("select USERNAME, AUTHORITY " + "from AUTHORITIES where USERNAME=?")
+				.passwordEncoder(new BCryptPasswordEncoder());
 	}
 
-	// Authorization : Role -> Access
+	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		System.out.println("=======================In Configure HttpSecurity===============" );
-		//Role--> Access
-		//Anything has /** should have role of USER
-		http.httpBasic().and().authorizeRequests().antMatchers("/**")
-				.hasRole("USER").antMatchers("/**").hasRole("USER")
-				.antMatchers("/**").hasRole("ADMIN").and().csrf().disable()
-				.headers().frameOptions().disable();
+		http.authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER").and().httpBasic(); // Authenticate users with
+																								// HTTP basic
+																								// authentication
 	}
 
 }
