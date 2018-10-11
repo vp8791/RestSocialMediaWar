@@ -9,11 +9,9 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-public class RestfulWebServicesApplication {
-	
-}
 
-/*@SpringBootApplication
+
+@SpringBootApplication
 public class RestfulWebServicesApplication {
 
 	public static void main(String[] args) {
@@ -34,4 +32,4 @@ public class RestfulWebServicesApplication {
 		return messageSource;
 	}
 	
-} */
+} 

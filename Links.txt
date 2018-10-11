@@ -6,14 +6,14 @@ Basic Auth:
    
 GET:
 =========   
-http://192.168.56.102:8080/facebook/jpa/users/2001  -- GET
-http://192.168.56.102:8080/facebook/jpa/users/ - GET
+http://localhost:9051/jpa/users/2001  -- GET
+http://localhost:9051/jpa/users/ - GET
 
 
 
 POST a User
 =================
-http://192.168.56.102:8080/facebook/jpa/users 
+http://localhost:9051/jpa/users 
 
   {
         "name": "Shashi",
@@ -22,7 +22,7 @@ http://192.168.56.102:8080/facebook/jpa/users
 	
 Post a Post for a User:
 ===========
-http://192.168.56.102:8080/facebook/jpa/users/2011/posts	
+http://localhost:9051/jpa/users/2011/posts	
 
 {
                 "description": "Hey How are u"
@@ -32,6 +32,6 @@ http://192.168.56.102:8080/facebook/jpa/users/2011/posts
 Health Check and Swagger Uis
 ================================
 
- http://192.168.56.102:8080/facebook/swagger-ui.html
- 192.168.56.102:8080/facebook/browser
- http://192.168.56.102:8080/facebook/application
+ http://localhost:9051/swagger-ui.html
+ localhost:9051/browser
+ http://localhost:9051/application

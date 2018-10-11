@@ -11,7 +11,12 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-@SpringBootApplication
+
+public class WarInitializerApplication 
+{
+	
+}
+/* @SpringBootApplication
 public class WarInitializerApplication  extends SpringBootServletInitializer {
  
     @Override
@@ -38,7 +43,7 @@ public class WarInitializerApplication  extends SpringBootServletInitializer {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
 		messageSource.setBasename("messages");
 		return messageSource;
-	}
+	} 
  
   
-}
+} */
