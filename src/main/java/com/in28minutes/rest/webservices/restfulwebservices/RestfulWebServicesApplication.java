@@ -10,7 +10,6 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 
-
 @SpringBootApplication
 public class RestfulWebServicesApplication {
 
