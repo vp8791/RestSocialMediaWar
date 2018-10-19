@@ -1,7 +1,7 @@
 Authorization Headers:
 Basic Auth:
-   Username : username
-   Password : password
+   Username : admin
+   Password : admin@123
 
    
 GET:
