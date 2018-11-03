@@ -2,23 +2,19 @@ package com.in28minutes.rest.webservices.restfulwebservices;
 
 import java.util.Locale;
 
-import javax.swing.Spring;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+//Uncomment all
+//@SpringBootApplication
+public class RestfulWebServicesApplication_Jar {
 
-@SpringBootApplication
-public class RestfulWebServicesApplication  extends  SpringBootServletInitializer {
-
-	public static void main(String[] args) {
-		SpringApplication.run(RestfulWebServicesApplication.class, args);
+/*	public static void main(String[] args) {
+		SpringApplication.run(RestfulWebServicesApplication_Jar.class, args);
 	}
 	
 	@Bean
@@ -33,10 +29,6 @@ public class RestfulWebServicesApplication  extends  SpringBootServletInitialize
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
 		messageSource.setBasename("messages");
 		return messageSource;
-	}
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-		return builder.sources(RestfulWebServicesApplication.class);
-	}
+	} */
 	
 } 

@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-public class UserJPAResource {
+public class AntiMoneyLaunderingResource {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -30,12 +31,12 @@ public class UserJPAResource {
 	@Autowired
 	private PostRepository postRepository;
 
-	@GetMapping("/jpa/users")
+	@GetMapping("/jpa/amlusers")
 	public List<User> retrieveAllUsers() {
 		return userRepository.findAll();
 	}
 
-	@GetMapping("/jpa/users/{id}")
+	@GetMapping("/jpa/amlusers/{id}")
 	public Resource<User> retrieveUser(@PathVariable long id) {
 		Optional<User> user = userRepository.findById(id);
 
@@ -48,14 +49,14 @@ public class UserJPAResource {
 
 		ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
 
-		resource.add(linkTo.withRel("all-users"));
+		resource.add(linkTo.withRel("all-aml-users"));
 
 		// HATEOAS
 
 		return resource;
 	}
 
-	@DeleteMapping("/jpa/users/{id}")
+	@DeleteMapping("/jpa/amlusers/{id}")
 	public void deleteUser(@PathVariable long id) {
 		userRepository.deleteById(id);
 	}
@@ -66,7 +67,7 @@ public class UserJPAResource {
 
 	// HATEOAS
 
-	@PostMapping("/jpa/users")
+	@PostMapping("/jpa/amlusers")
 	public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
 		User savedUser = userRepository.save(user);
 
@@ -77,7 +78,34 @@ public class UserJPAResource {
 
 	}
 	
-	@GetMapping("/jpa/users/{id}/posts")
+	@PutMapping("/jpa/amlusers/{id}")
+	public ResponseEntity<Object> updateUser(@PathVariable long id, @RequestBody User user) {
+		
+		Optional<User> dbUser = userRepository.findById(id);
+
+		if (!dbUser.isPresent())
+		{		
+			User savedUser = userRepository.save(user);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
+				.toUri();
+		return ResponseEntity.created(location).build();
+		} else {
+			User updateUser = dbUser.get();
+			updateUser.setBirthDate(user.getBirthDate());
+			updateUser.setName(user.getName());
+			userRepository.save(updateUser);
+			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(updateUser.getId())
+					.toUri();
+			return ResponseEntity.created(location).build();
+			
+		}
+
+	}
+	
+	
+	
+	
+	@GetMapping("/jpa/amlusers/{id}/posts")
 	public List<Post> retrieveAllUsers(@PathVariable long id) {
 		Optional<User> userOptional = userRepository.findById(id);
 		
@@ -89,7 +117,7 @@ public class UserJPAResource {
 	}
 
 
-	@PostMapping("/jpa/users/{id}/posts")
+	@PostMapping("/jpa/amlusers/{id}/posts")
 	public ResponseEntity<Object> createPost(@PathVariable long id, @RequestBody Post post) {
 		
 		Optional<User> userOptional = userRepository.findById(id);
