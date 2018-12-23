@@ -4,6 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +23,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.in28minutes.rest.webservices.restfulwebservices.user.posts.PostPostsRepository;
 import com.in28minutes.rest.webservices.restfulwebservices.user.posts.PostUserRepository;
 import com.in28minutes.rest.webservices.restfulwebservices.user.posts.UserDetail;
+import com.in28minutes.rest.webservices.restfulwebservices.user.posts.UserDetailDto;
 import com.in28minutes.rest.webservices.restfulwebservices.user.posts.UserPost;
+import com.in28minutes.rest.webservices.restfulwebservices.user.posts.UserPostDto;
 
 @RestController
 public class AntiMoneyLaunderingResource {
@@ -35,6 +39,8 @@ public class AntiMoneyLaunderingResource {
 	@Autowired
 	private PostUserRepository postuserRepository;
 
+	@Autowired
+	private PostPostsRepository postPostsRepository;
 
 	@GetMapping("/jpa/amlusers")
 	public List<User> retrieveAllUsers() {
@@ -62,8 +68,24 @@ public class AntiMoneyLaunderingResource {
 	}
 
 	@DeleteMapping("/jpa/amlusers/{id}")
-	public void deleteUser(@PathVariable long id) {
-		userRepository.deleteById(id);
+	public void deleteUser(@PathVariable long id) {	
+		boolean userExists = postuserRepository.existsById(id);
+		
+		if (!userExists)
+			throw new UserNotFoundException("id-" + id);
+		
+		Iterable<UserPost> allPosts = postPostsRepository.findAll();
+		for(UserPost userPost : allPosts) {
+			Long long1 = new Long(userPost.getUserId());
+			Long long2 = new Long(id);
+		
+			if(long1.compareTo(long2) == 0 ) {
+				postPostsRepository.deleteById(userPost.getId());
+			}
+		}
+		
+		postuserRepository.deleteById(id);
+		
 	}
 
 	//
@@ -73,14 +95,10 @@ public class AntiMoneyLaunderingResource {
 	// HATEOAS
 
 	@PostMapping("/jpa/amlusers")
-	public ResponseEntity<Object> createUser(@Valid @RequestBody UserDetail user) {
-		System.out.println("=================Start POST=======================");
-		System.out.println(user.toString());
-		System.out.println("==================End POST======================");
+	public ResponseEntity<Object> createUser(@Valid @RequestBody UserDetailDto userDto) {
+		UserDetail persistUserDetailsDto = persistUserDetailsDto(userDto);
 		
-		UserDetail savedUser = postuserRepository.save(user);
-
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(persistUserDetailsDto.getId())
 				.toUri();
 
 		return ResponseEntity.created(location).build();
@@ -88,24 +106,24 @@ public class AntiMoneyLaunderingResource {
 	}
 	
 	@PutMapping("/jpa/amlusers/{id}")
-	public ResponseEntity<Object> updateUser(@PathVariable long id, @RequestBody UserDetail user) {
+	public ResponseEntity<Object> updateUser(@PathVariable long id, @RequestBody UserDetailDto userDto) {
 		
 		System.out.println("=================Start PUT=======================");
-		System.out.println(user.toString());
+		System.out.println(userDto.toString());
 		System.out.println("==================End PUT======================");
 		
 		Optional<UserDetail> dbUser = postuserRepository.findById(id);
 
 		if (!dbUser.isPresent())
-		{		
-			UserDetail savedUser = postuserRepository.save(user);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId())
+		{
+			UserDetail persistUserDetailsDto = persistUserDetailsDto(userDto);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(persistUserDetailsDto.getId())
 				.toUri();
 		return ResponseEntity.created(location).build();
 		} else {
 			UserDetail updateUser = dbUser.get();
-			updateUser.setBirthDate(user.getBirthDate());
-			updateUser.setName(user.getName());
+			updateUser.setBirthDate(userDto.getBirthDate());
+			updateUser.setName(userDto.getName());
 			postuserRepository.save(updateUser);
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(updateUser.getId())
 					.toUri();
@@ -116,6 +134,27 @@ public class AntiMoneyLaunderingResource {
 	}
 	
 	
+	
+	private UserDetail persistUserDetailsDto(UserDetailDto userDto) {
+		UserDetail userdetail = new UserDetail();
+		userdetail.setBirthDate(userDto.getBirthDate());
+		userdetail.setName(userDto.getName());
+		
+		System.out.println(userdetail.toString());
+		System.out.println("==================End POST======================");
+		
+		UserDetail savedUser = postuserRepository.save(userdetail);
+		
+		List<UserPostDto> userPosts = userDto.getUserPosts();
+		for(UserPostDto userPostDto : userPosts) {
+			UserPost userPost = new UserPost();
+			userPost.setDescription(userPostDto.getDescription());
+			userPost.setUserId(savedUser.getId());
+			postPostsRepository.save(userPost);
+		}
+		
+		return savedUser;
+	}
 	
 	
 	@GetMapping("/jpa/amlusers/{id}/posts")
@@ -131,7 +170,7 @@ public class AntiMoneyLaunderingResource {
 
 
 	@PostMapping("/jpa/amlusers/{id}/posts")
-	public ResponseEntity<Object> createPost(@PathVariable long id, @RequestBody UserPost post) {
+	public ResponseEntity<Object> createPost(@PathVariable long id, @RequestBody User post) {
 		
 		Optional<UserDetail> userOptional = postuserRepository.findById(id);
 		
@@ -140,8 +179,8 @@ public class AntiMoneyLaunderingResource {
 		}
 
 		UserDetail user = userOptional.get();
-		
-		post.setUserDetail(user);
+		UserPost userPost = new UserPost();		
+		userPost.setUserId(user.getId());
 				
 		postuserRepository.save(user);
 		

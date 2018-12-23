@@ -13,25 +13,16 @@ import java.util.Set;
  * The persistent class for the USER_DETAILS database table.
  * 
  */
-@Entity
-@Table(name="USER_DETAILS")
-@NamedQuery(name="UserDetail.findAll", query="SELECT u FROM UserDetail u")
-public class UserDetail implements Serializable {
+public class UserDetailDto implements Serializable {
 	private static final long serialVersionUID = 8L;
-
-	@Id
-	@SequenceGenerator(name="USER_DETAILS_ID_GENERATOR", sequenceName="USER_SEQUENCE", allocationSize = 1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USER_DETAILS_ID_GENERATOR")
 	private long id;
 	
-	@Temporal(TemporalType.DATE)
-	@Column(name="BIRTH_DATE")
 	private Date birthDate;
 		
 	private String name;
+	private List<UserPostDto> userPosts;
 
-
-	public UserDetail() {
+	public UserDetailDto() {
 	}
 
 
@@ -62,6 +53,29 @@ public class UserDetail implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+
+
+
+	public List<UserPostDto> getUserPosts() {
+		return userPosts;
+	}
+
+
+
+	public void setUserPosts(List<UserPostDto> userPosts) {
+		this.userPosts = userPosts;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "UserDetail [id=" + id + ", birthDate=" + birthDate + ", name=" + name + ", userPosts=" + userPosts
+				+ "]";
+	}
+
+	
 	
 	
 

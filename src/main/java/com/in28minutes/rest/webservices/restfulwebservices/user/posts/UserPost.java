@@ -21,10 +21,8 @@ public class UserPost implements Serializable {
 
 	private String description;
 
-	//bi-directional many-to-one association to UserDetail		
-	@ManyToOne
-	@JoinColumn(name = "USER_ID")
-	private UserDetail userDetail;
+	@Column(name="USER_ID")
+	private long userId;
 
 	public UserPost() {
 	}
@@ -45,12 +43,14 @@ public class UserPost implements Serializable {
 		this.description = description;
 	}
 
-	public UserDetail getUserDetail() {
-		return this.userDetail;
+	public long getUserId() {
+		return userId;
 	}
 
-	public void setUserDetail(UserDetail userDetail) {
-		this.userDetail = userDetail;
+	public void setUserId(long userId) {
+		this.userId = userId;
 	}
+
+
 
 }
