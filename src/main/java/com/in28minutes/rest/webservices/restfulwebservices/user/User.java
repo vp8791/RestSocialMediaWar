@@ -6,7 +6,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -32,6 +32,8 @@ public class User {
 
 	@Past
 	@ApiModelProperty(notes="Birth date should be in the past")
+	@Temporal(TemporalType.DATE)
+	@Column(name="BIRTH_DATE")
 	private Date birthDate;
 	
 	@OneToMany(mappedBy="user")
