@@ -1,0 +1,11 @@
+package com.in28minutes.rest.webservices.restfulwebservices.user;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NO_CONTENT)
+public class NoUsersNotFoundException extends RuntimeException {
+	public NoUsersNotFoundException(String message) {
+		super(message);
+	}
+}
